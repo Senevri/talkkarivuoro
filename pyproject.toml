@@ -166,7 +166,9 @@ requires = [
 [tool.briefcase.app.talkkarivuoro.android]
 requires = [
     "toga-android~=0.4.0",
-    "jpype1"
+    "cython",
+    "pyjnius~=1.6.1"
+    #"jpype1"
 ]
 exclude = ["src/talkkarivuoro/windows_gui.py"]
 

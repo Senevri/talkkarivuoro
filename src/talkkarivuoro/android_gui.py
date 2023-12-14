@@ -4,10 +4,7 @@ from talkkarivuoro.schedule_generator import generate_schedule as generate_ics_s
 import logging
 from toga.window import Dialog
 import tempfile
-import webbrowser
-import jpype
-
-# import jnius
+import jnius
 from toga.style.pack import Pack, COLUMN
 from datetime import timedelta
 
@@ -102,34 +99,58 @@ class TalkkarivuoroGUI(toga.App):
             event_name=event_name,
         )
         self.share_ics(cal)
+import jnius
 
-    def share_ics(self, cal):
-        # Generate the ICS file
-
+    #jnius
+    def download_ics(self, cal):
         ics_content = cal.serialize()
 
         # Save the ICS file to a temporary location
-        temp_file_path = tempfile.mktemp(suffix=".ics")
+        temp_file_path = "/path/to/temp/file.ics"
         with open(temp_file_path, "w") as f:
             f.write(ics_content)
 
-        jpype.startJVM(jpype.getDefaultJVMPath())
-        try:
-            # Get the Android classes
-            Intent = jpype.JClass("android.content.Intent")
-            Uri = jpype.JClass("android.net.Uri")
+        # Trigger the download using Android-specific functionality
+        Intent = jnius.autoclass('android.content.Intent')
+        Uri = jnius.autoclass('android.net.Uri')
+        PythonActivity = jnius.autoclass('org.kivy.android.PythonActivity')
+        activity = PythonActivity.mActivity
 
-            # Create the intent
-            intent = Intent(Intent.ACTION_SEND)
-            intent.setType("text/calendar")
-            intent.set
-            inptent.putExtra(Intent.EXTRA_SUBJECT, "My Schedule")
-            intent.putExtra(Intent.EXTRA_TEXT, ics_content)
+        intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(Uri.parse(temp_file_path), 'text/calendar')
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-            # Launch the share dialog
-            jpype.JClass("android.content.Context").getApplicationContext().startActivity(
-                Intent.createChooser(intent, "Share")
-            )
+        activity.startActivity(intent)
 
-        finally:
-            jpype.ShutdownJVM()
+    #jpype
+    # def share_ics(self, cal):
+    #     # Generate the ICS file
+
+    #     ics_content = cal.serialize()
+
+    #     # Save the ICS file to a temporary location
+    #     temp_file_path = tempfile.mktemp(suffix=".ics")
+    #     with open(temp_file_path, "w") as f:
+    #         f.write(ics_content)
+
+    #     jpype.startJVM(jpype.getDefaultJVMPath())
+    #     try:
+    #         # Get the Android classes
+    #         Intent = jpype.JClass("android.content.Intent")
+    #         Uri = jpype.JClass("android.net.Uri")
+
+    #         # Create the intent
+    #         intent = Intent(Intent.ACTION_SEND)
+    #         intent.setType("text/calendar")
+    #         intent.set
+    #         inptent.putExtra(Intent.EXTRA_SUBJECT, "My Schedule")
+    #         intent.putExtra(Intent.EXTRA_TEXT, ics_content)
+
+    #         # Launch the share dialog
+    #         jpype.JClass("android.content.Context").getApplicationContext().startActivity(
+    #             Intent.createChooser(intent, "Share")
+    #         )
+
+    #     finally:
+    #         jpype.ShutdownJVM()

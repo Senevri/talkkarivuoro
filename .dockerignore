@@ -1,0 +1,7 @@
+**/.venv/
+**/build/
+**/dist/
+**/ext/
+**/logs/
+**/__pycache__/
+**/*.dist-info/
