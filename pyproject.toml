@@ -166,7 +166,7 @@ requires = [
 [tool.briefcase.app.talkkarivuoro.android]
 requires = [
     "toga-android~=0.4.0",
-    "cython",
+    #"cython",
     "pyjnius~=1.6.1"
     #"jpype1"
 ]
